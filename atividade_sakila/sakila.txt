@@ -1,0 +1,170 @@
+O banco de dados Sakila é um exemplo de banco de dados amplamente utilizado para demonstrar funcionalidades e operações do MySQL. 
+
+Ele é uma representação fictícia de uma locadora de vídeos e contém várias tabelas que simulam o funcionamento de uma empresa desse tipo.
+
+Aqui está o detalhamento das tabelas, atributos e chaves principais, com foco na tabela de clientes e outras relacionadas à área de negócios, como estoque, filmes, pagamentos e faturas.
+
+Tabelas Envolvidas no Processo de Cliente
+1. Tabela customer (Clientes)
+
+A tabela customer armazena informações detalhadas sobre os clientes da locadora.
+
+Atributos:
+
+    customer_id: Chave primária (PK) que identifica unicamente cada cliente.
+
+    store_id: Chave estrangeira (FK) que aponta para a tabela store, associando o cliente à loja específica.
+
+    first_name: Nome do cliente.
+
+    last_name: Sobrenome do cliente.
+
+    email: E-mail do cliente.
+
+    address_id: Chave estrangeira (FK) para a tabela address, indicando o endereço do cliente.
+
+    active: Um valor booleano que indica se o cliente está ativo ou não.
+
+    create_date: Data de criação do registro do cliente.
+
+    last_update: Data da última atualização do cliente.
+
+Chaves:
+
+    PK: customer_id
+
+    FK: store_id (para tabela store), address_id (para tabela address)
+
+2. Tabela address (Endereços)
+
+Armazena os endereços dos clientes.
+
+Atributos:
+
+    address_id: Chave primária (PK) para identificar o endereço.
+
+    address: Endereço.
+
+    address2: Endereço complementar (opcional).
+
+    district: Bairro.
+
+    city_id: Chave estrangeira (FK) para a tabela city, associando o endereço à cidade.
+
+    postal_code: Código postal.
+
+    phone: Número de telefone.
+
+Chaves:
+
+    PK: address_id
+
+    FK: city_id (para tabela city)
+
+3. Tabela payment (Pagamentos)
+
+Armazena os pagamentos feitos pelos clientes.
+
+Atributos:
+
+    payment_id: Chave primária (PK) que identifica o pagamento.
+
+    customer_id: Chave estrangeira (FK) que liga o pagamento ao cliente.
+
+    staff_id: Chave estrangeira (FK) que representa o funcionário que processou o pagamento.
+
+    rental_id: Chave estrangeira (FK) que se refere à locação relacionada ao pagamento.
+
+    amount: Valor pago.
+
+Chaves:
+
+    PK: payment_id
+
+    FK: customer_id (para tabela customer), staff_id (para tabela staff), rental_id (para tabela rental)
+
+4. Tabela rental (Locações)
+
+Armazena os registros das locações de filmes pelos clientes.
+
+Atributos:
+
+    rental_id: Chave primária (PK) que identifica a locação.
+
+    rental_date: Data de locação.
+
+    inventory_id: Chave estrangeira (FK) que se refere ao estoque de filmes.
+
+    customer_id: Chave estrangeira (FK) que se refere ao cliente que fez a locação.
+
+    return_date: Data de devolução do filme.
+
+    staff_id: Chave estrangeira (FK) que se refere ao funcionário que realizou a locação.
+
+Chaves:
+
+    PK: rental_id
+
+    FK: inventory_id (para tabela inventory), customer_id (para tabela customer), staff_id (para tabela staff)
+
+5. Tabela inventory (Estoque de Filmes)
+
+Armazena os filmes disponíveis para locação e sua quantidade em estoque.
+
+Atributos:
+
+    inventory_id: Chave primária (PK) que identifica o item de estoque.
+
+    film_id: Chave estrangeira (FK) que refere-se ao filme.
+
+    store_id: Chave estrangeira (FK) que relaciona o estoque à loja específica.
+
+Chaves:
+
+    PK: inventory_id
+
+    FK: film_id (para tabela film), store_id (para tabela store)
+
+6. Tabela film (Filmes)
+
+Armazena os detalhes dos filmes.
+
+Atributos:
+
+    film_id: Chave primária (PK) que identifica o filme.
+
+    title: Título do filme.
+
+    description: Descrição do filme.
+
+    release_year: Ano de lançamento.
+
+    language_id: Chave estrangeira (FK) que referencia a tabela language, associando o filme ao idioma.
+
+    rental_duration: Duração do aluguel do filme.
+
+    rental_rate: Taxa de aluguel do filme.
+
+    length: Duração do filme (em minutos).
+
+    replacement_cost: Custo de reposição em caso de perda ou dano do filme.
+
+    rating: Avaliação do filme.
+
+Chaves:
+
+    PK: film_id
+
+    FK: language_id (para tabela language)
+
+Para a Área de Negócios
+
+Para a área de negócios da locadora, as principais tabelas relacionadas com a operação são:
+
+    Tabela customer: Essencial para entender o perfil do cliente, seu histórico de locação e seus dados de pagamento.
+
+    Tabela payment: Importante para analisar as receitas da empresa, verificação de pagamento e retenção de clientes.
+
+    Tabela rental: Fundamental para rastrear a locação de filmes e avaliar a frequência de locações dos clientes.
+
+    Tabela inventory: Essencial para a gestão do estoque de filmes, avaliando a popularidade de filmes e a necessidade de reposição.
