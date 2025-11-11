@@ -1,0 +1,145 @@
+CREATE DATABASE IF NOT EXISTS Universidade;
+USE Universidade;
+
+-- a)
+
+CREATE TABLE Alunos (
+    MAT BIGINT PRIMARY KEY,
+    nome VARCHAR(255),
+    endereco VARCHAR(255),
+    cidade VARCHAR(100)
+);
+
+INSERT INTO Alunos (MAT, nome, endereco, cidade) VALUES
+(2015010101, 'JOSE DE ALENCAR', 'RUA DAS ALMAS', 'NATAL'),
+(2015010102, 'JOÃO JOSÉ', 'AVENIDA RUY CARNEIRO', 'JOÃO PESSOA'),
+(2015010103, 'MARIA JOAQUINA', 'RUA CARROSSEL', 'RECIFE'),
+(2015010104, 'MARIA DAS DORES', 'RUA DAS LADEIRAS', 'FORTALEZA'),
+(2015010105, 'JOSUÉ CLAUDINO DOS SANTOS', 'CENTRO', 'NATAL'),
+(2015010106, 'JOSUÉLISSON CLAUDINO DOS SANTOS', 'CENTRO', 'NATAL');
+
+CREATE TABLE Disciplinas (
+    COD_DISC VARCHAR(10) PRIMARY KEY,
+    nome_disc VARCHAR(255),
+    carga_hor INT
+);
+
+INSERT INTO Disciplinas (COD_DISC, nome_disc, carga_hor) VALUES
+('BD', 'BANCO DE DADOS', 100),
+('POO', 'PROGRAMAÇÃO COM ACESSO A BANCO DE DADOS', 100),
+('WEB', 'AUTORIA WEB', 50),
+('ENG', 'ENGENHARIA DE SOFTWARE', 80);
+
+CREATE TABLE Professores (
+    COD_PROF INT PRIMARY KEY,
+    nome VARCHAR(255),
+    endereco VARCHAR(255),
+    cidade VARCHAR(100)
+);
+
+INSERT INTO Professores (COD_PROF, nome, endereco, cidade) VALUES
+(212131, 'NICKERSON FERREIRA', 'RUA MANAÍRA', 'JOÃO PESSOA'),
+(122135, 'ADORILSON BEZERRA', 'AVENIDA SALGADO FILHO', 'NATAL'),
+(192011, 'DIEGO OLIVEIRA', 'AVENIDA ROBERTO FREIRE', 'NATAL');
+
+CREATE TABLE Turma (
+    COD_DISC VARCHAR(10),
+    COD_TURMA INT,
+    COD_PROF INT,
+    ANO INT,
+    horario VARCHAR(20),
+    PRIMARY KEY (COD_DISC, COD_TURMA, ANO),
+    FOREIGN KEY (COD_DISC) REFERENCES Disciplinas(COD_DISC),
+    FOREIGN KEY (COD_PROF) REFERENCES Professores(COD_PROF)
+);
+
+INSERT INTO Turma (COD_DISC, COD_TURMA, COD_PROF, ANO, horario) VALUES
+('BD', 1, 212131, 2015, '11H-12H'),
+('BD', 2, 212131, 2015, '13H-14H'),
+('POO', 1, 192011, 2015, '08H-09H'),
+('WEB', 1, 192011, 2015, '07H-08H'),
+('ENG', 1, 122135, 2015, '10H-11H');
+
+CREATE TABLE Historico (
+    MAT BIGINT,
+    COD_DISC VARCHAR(10),
+    COD_TURMA INT,
+    COD_PROF INT,
+    ANO INT,
+    frequencia DECIMAL(5,2),
+    nota DECIMAL(4,2),
+    PRIMARY KEY (MAT, COD_DISC, COD_TURMA, ANO),
+    FOREIGN KEY (MAT) REFERENCES Alunos(MAT),
+    FOREIGN KEY (COD_DISC, COD_TURMA, ANO) REFERENCES Turma(COD_DISC, COD_TURMA, ANO)
+);
+
+INSERT INTO Historico (MAT, COD_DISC, COD_TURMA, COD_PROF, ANO, frequencia, nota) VALUES
+-- Aluno 2015010101 (JOSE DE ALENCAR)
+(2015010101, 'BD', 1, 212131, 2015, 85.50, 7.8),
+(2015010101, 'POO', 1, 192011, 2015, 90.00, 8.5),
+(2015010101, 'WEB', 1, 192011, 2015, 75.00, 6.0),
+
+-- Aluno 2015010102 (JOÃO JOSÉ)
+(2015010102, 'BD', 2, 212131, 2015, 92.00, 9.5),
+(2015010102, 'ENG', 1, 122135, 2015, 88.00, 7.1),
+
+-- Aluno 2015010103 (MARIA JOAQUINA)
+(2015010103, 'BD', 1, 212131, 2015, 95.00, 10.0),
+(2015010103, 'POO', 1, 192011, 2015, 82.00, 6.5),
+(2015010103, 'ENG', 1, 122135, 2015, 100.00, 9.0),
+
+-- Aluno 2015010104 (MARIA DAS DORES)
+(2015010104, 'WEB', 1, 192011, 2015, 100.00, 9.8),
+(2015010104, 'BD', 2, 212131, 2015, 70.00, 4.5), -- Nota baixa em BD
+
+-- Aluno 2015010105 (JOSUÉ CLAUDINO DOS SANTOS)
+(2015010105, 'POO', 1, 192011, 2015, 80.00, 7.0),
+(2015010105, 'WEB', 1, 192011, 2015, 90.00, 8.0),
+(2015010105, 'ENG', 1, 122135, 2015, 78.50, 5.5),
+
+-- Aluno 2015010106 (JOSUÉLISSON CLAUDINO DOS SANTOS)
+(2015010106, 'BD', 1, 212131, 2015, 65.00, 2.0), -- Nota baixa em BD
+(2015010106, 'BD', 2, 212131, 2015, 80.00, 7.0),
+(2015010106, 'POO', 1, 192011, 2015, 95.00, 9.0);
+
+-- a) Encontre a MAT dos alunos com nota em BD em 2015 menor que 5 (obs: BD = código da disciplinas).
+
+SELECT MAT
+FROM Historico
+WHERE
+    COD_DISC = 'BD'
+    AND ANO = 2015
+    AND nota < 5;
+    
+-- b) Encontre a MAT e calcule a média das notas dos alunos na disciplina de POO em 2015.
+
+SELECT
+    MAT,
+    AVG(nota) AS media_notas_POO
+FROM
+    Historico
+WHERE
+    COD_DISC = 'POO'
+    AND ANO = 2015
+GROUP BY
+    MAT;
+    
+-- c) Encontre a MAT e calcule a média das notas dos alunos na disciplina de POO em 2015 e que esta média seja superior a 6. 
+
+SELECT
+    MAT,
+    AVG(nota) AS media_notas_POO
+FROM
+    Historico
+WHERE
+    COD_DISC = 'POO'
+    AND ANO = 2015
+GROUP BY
+    MAT
+HAVING
+    media_notas_POO > 6;
+    
+-- d)  Encontre quantos alunos não são de Natal. 
+SELECT COUNT(MAT) AS total_alunos_nao_natal
+FROM Alunos
+WHERE cidade != 'NATAL';
